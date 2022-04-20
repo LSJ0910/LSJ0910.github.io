@@ -243,6 +243,19 @@
 </header>
 
     
+<script src="/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
 
 
 
@@ -376,6 +389,15 @@
                 </div>
                 <div class="col s5 right-align">
                     
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/OpenFOAM/" class="post-category">
+                                OpenFOAM
+                            </a>
+                        
+                    </div>
+                    
                 </div>
             </div>
 
@@ -392,7 +414,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
-                    660
+                    659
                 </div>
                 
 
@@ -423,15 +445,15 @@
 <p>This tutorial covers the steps required to install the latest version of GCC compiler and compile a C++ programm with it on Ubuntu 20.04.</p>
 <hr>
 <h2 id="Install-GCC-and-G-on-Ubuntu-20-04"><a href="#Install-GCC-and-G-on-Ubuntu-20-04" class="headerlink" title="Install GCC and G++ on Ubuntu-20.04"></a>Install GCC and G++ on Ubuntu-20.04</h2><p>Perform the steps below to install the GCC Compiler:<br>01. Begin with updating the packages list:<br><code>$ sudo apt update</code><br>02. Install the <code>build-essential</code> package by typing:<br><code>$ sudo apt install build-essential</code><br>The commmand installs a bunch of new package including <code>gcc</code>, <code>g++</code> and <code>make</code>.<br>If you want to install manual pages for development:<br><code>$ sudo apt-get install manpages-dev</code><br>03. Now you can check the version of gcc by:<br><code>$ gcc --version</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Output:</span><br><span class="line">gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0</span><br><span class="line">Copyright (C) 2019 Free Software Foundation, Inc.</span><br><span class="line">This is free software; see the source for copying conditions.  There is NO</span><br><span class="line">warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Output:</span><br><span class="line">gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0</span><br><span class="line">Copyright (C) 2019 Free Software Foundation, Inc.</span><br><span class="line">This is free software; see the source for copying conditions.  There is NO</span><br><span class="line">warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>GCC is now installed on your system.</p>
 <h2 id="Install-Multiple-GCC-Versions"><a href="#Install-Multiple-GCC-Versions" class="headerlink" title="Install Multiple GCC Versions"></a>Install Multiple GCC Versions</h2><p>This section will give a detail instructions about how to install multiple versions of GCC on ubuntu 20.04. The newer versions of the GCC compiler include support for new languages, better performance and extended features. Installing multiple versions of gcc is available from the Ubuntu Toolchain PPA.</p>
 <p>First, add the <code>ubuntu-toolchain-r/test</code> PPA to your system:<br><code>$ sudo apt install software-properties-common</code><br><code>$ sudo add-apt-repository ppa:ubuntu-toolchain-r/test</code></p>
 <p>Install the desired GCC and G++ versions by typing:<br><code>$ sudo apt install gcc-7</code><br>The commands below will configure alternative for each version and associate a priority with it. The default version is the one with the highest priority, in our case that is <code>gcc-9</code>.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9</span><br><span class="line">$sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8</span><br><span class="line">$sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 70 --slave /usr/bin/g++ g++ /usr/bin/g++-7 --slave /usr/bin/gcov gcov /usr/bin/gcov-7</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9</span><br><span class="line">$sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8</span><br><span class="line">$sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 70 --slave /usr/bin/g++ g++ /usr/bin/g++-7 --slave /usr/bin/gcov gcov /usr/bin/gcov-7</span><br></pre></td></tr></table></figure>
 
 <p>Later if you want to change the default version use the <code>update-alternatives</code> command:<br><code>$ sudo update-alternatives --config gcc</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Output:</span><br><span class="line"></span><br><span class="line">There are 3 choices for the alternative gcc (providing /usr/bin/gcc).</span><br><span class="line"></span><br><span class="line">  Selection    Path            Priority   Status</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">* 0            /usr/bin/gcc-9   90        auto mode</span><br><span class="line">  1            /usr/bin/gcc-7   70        manual mode</span><br><span class="line">  2            /usr/bin/gcc-8   80        manual mode</span><br><span class="line">  3            /usr/bin/gcc-9   90        manual mode</span><br><span class="line"></span><br><span class="line">Press &lt;enter&gt; to keep the current choice[*], or type selection number:</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Output:</span><br><span class="line"></span><br><span class="line">There are 3 choices for the alternative gcc (providing /usr/bin/gcc).</span><br><span class="line"></span><br><span class="line">  Selection    Path            Priority   Status</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">* 0            /usr/bin/gcc-9   90        auto mode</span><br><span class="line">  1            /usr/bin/gcc-7   70        manual mode</span><br><span class="line">  2            /usr/bin/gcc-8   80        manual mode</span><br><span class="line">  3            /usr/bin/gcc-9   90        manual mode</span><br><span class="line"></span><br><span class="line">Press &lt;enter&gt; to keep the current choice[*], or type selection number:</span><br></pre></td></tr></table></figure>
 <p>You will be presented with a list of all installed GCC versions on your Ubuntu system. Enter the number of the version you want to be used as a default and press <code>Enter</code>.</p>
 <p>The command will create symbolic links to the specific versions of GCC and G++.</p>
 <h2 id="Compile-a-C-program"><a href="#Compile-a-C-program" class="headerlink" title="Compile a C++ program"></a>Compile a C++ program</h2><p>Compiling a C++ program is pretty easy. Now we have three source files <code>main.cpp</code>,<code>example.h</code> and <code>example.cpp</code> under current folder. Compiling them using the commmand line:<br><code>$ gcc -o exe_name main.cpp example.cpp -lstdc++ -lm</code><br>Here <code>exe_name</code> is the name of your <code>.exe</code> file which you want to produce after compilation. <code>-lstdc++</code> and <code>-lm</code> are standard C++ library and math library linked to this main execution. However, you should just make your life easier and usr <code>g++</code>.</p>
@@ -584,8 +606,12 @@
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Shi-Jun Li
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/OpenFOAM/" class="post-category">
+                                    OpenFOAM
+                                </a>
+                            
                             
                         </span>
                     </div>
@@ -811,11 +837,11 @@
     
 
     <div class="container row center-align"
-         style="margin-bottom: 0px !important;">
+         style="margin-bottom: 15px !important;">
         <div class="col s12 m8 l8 copy-right">
             Copyright&nbsp;&copy;
             
-                <span id="year">2019-2022</span>
+                <span id="year">2022</span>
             
             <a href="/about" target="_blank">Shi-Jun Li</a>
             |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
@@ -823,7 +849,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;Total Words:&nbsp;<span
-                        class="white-color">735</span>
+                        class="white-color">734</span>
             
             
             
@@ -844,6 +870,60 @@
             <br>
 
             <!-- 运行天数提醒. -->
+            
+                <span id="sitetime"> Loading ...</span>
+                <script>
+                    var calcSiteTime = function () {
+                        var seconds = 1000;
+                        var minutes = seconds * 60;
+                        var hours = minutes * 60;
+                        var days = hours * 24;
+                        var years = days * 365;
+                        var today = new Date();
+                        var startYear = "2022";
+                        var startMonth = "4";
+                        var startDate = "6";
+                        var startHour = "0";
+                        var startMinute = "0";
+                        var startSecond = "0";
+                        var todayYear = today.getFullYear();
+                        var todayMonth = today.getMonth() + 1;
+                        var todayDate = today.getDate();
+                        var todayHour = today.getHours();
+                        var todayMinute = today.getMinutes();
+                        var todaySecond = today.getSeconds();
+                        var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                        var diff = t2 - t1;
+                        var diffYears = Math.floor(diff / years);
+                        var diffDays = Math.floor((diff / days) - diffYears * 365);
+
+                        // 区分是否有年份.
+                        var language = 'en';
+                        if (startYear === String(todayYear)) {
+                            document.getElementById("year").innerHTML = todayYear;
+                            var daysTip = 'This site has been running for ' + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                daysTip = '本站已运行 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                daysTip = '本站已運行 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = daysTip;
+                        } else {
+                            document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                            var yearsAndDaysTip = 'This site has been running for ' + diffYears + ' years and '
+                                + diffDays + ' days';
+                            if (language === 'zh-CN') {
+                                yearsAndDaysTip = '本站已运行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            } else if (language === 'zh-HK') {
+                                yearsAndDaysTip = '本站已運行 ' + diffYears + ' 年 ' + diffDays + ' 天';
+                            }
+                            document.getElementById("sitetime").innerHTML = yearsAndDaysTip;
+                        }
+                    }
+
+                    calcSiteTime();
+                </script>
             
             <br>
             
