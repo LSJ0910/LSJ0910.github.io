@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="First Blog For Testing, Beeth-Space">
-    <meta name="description" content="">
+    <meta name="keywords" content="Discretisation Scheme Settings for OpenFOAM, Beeth-Space">
+    <meta name="description" content="Hrvoje Jasak gave a detailed presentation about the best practice guidelines for the Finite Volume (FV) discretisation i">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +19,7 @@
 
     
 
-    <title>First Blog For Testing | Beeth-Space</title>
+    <title>Discretisation Scheme Settings for OpenFOAM | Beeth-Space</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -246,7 +246,7 @@
 <script src="/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = '';
+        let pwd = 'cd892494455f6fa019e5b1e015c26726690db60165c7ff0c1e341c3b7b442d77';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -259,12 +259,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">First Blog For Testing</h1>
+                    <h1 class="description center-align post-title">Discretisation Scheme Settings for OpenFOAM</h1>
                 </div>
             </div>
         </div>
@@ -378,12 +378,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">No tag</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/scheme/">
+                                <span class="chip bg-color">scheme</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/OpenFOAM/" class="post-category">
+                                OpenFOAM
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -392,7 +405,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2022-04-10
+                    2022-04-29
                 </div>
                 
 
@@ -401,14 +414,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
-                    0
+                    1.3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
-                    1 Min
+                    8 Min
                 </div>
                 
 
@@ -428,7 +441,57 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <p>Hrvoje Jasak gave a detailed presentation about the best practice guidelines for the Finite Volume (FV) discretisation in OpenFOAM at Portuguese FOAM User Group Meeting, 2015.<a href="#1"><sup>1</sup></a> Here we want to summarize the discretisation schemes in <code>foam-extend 3.1</code> and present the best scheme in tet meshes.</p>
+<hr>
+<h2 id="Finite-Volume-Discretisation"><a href="#Finite-Volume-Discretisation" class="headerlink" title="Finite Volume Discretisation"></a>Finite Volume Discretisation</h2><ul>
+<li><strong>Mesh quality</strong> is main concerns of FVM accuracy.</li>
+<li>Mesh strcuture (hexahedral or tetrahedral meshes) determines the choice of appropriate gradient calculation algorithm.</li>
+<li>For discretisation of convection and diffusion term, it is essential to use bounded differencing schemes.</li>
+</ul>
+<h2 id="Gradient-Scheme"><a href="#Gradient-Scheme" class="headerlink" title="Gradient Scheme"></a>Gradient Scheme</h2><h3 id="Gauss-gradient-scheme-for-hexahetral-mesh"><a href="#Gauss-gradient-scheme-for-hexahetral-mesh" class="headerlink" title="Gauss gradient scheme for hexahetral mesh"></a>Gauss gradient scheme for hexahetral mesh</h3><p>$$\begin{equation}<br>\int_{V_P}\nabla \phi dV &#x3D; \oint_{\partial V_P} d \mathbf{s}\phi &#x3D; \sum_f \mathbf{s_f}\phi_f<br>\end{equation} $$<br>$$<br>\phi_f &#x3D; \frac{\overline{fN}}{\overline{PN}}\phi_P + (1-\frac{\overline{fN}}{\overline{PN}})\phi_N<br>\tag{2}<br>$$<br>Note:</p>
+<ul>
+<li>If $\phi_f$ is face center value, the Gauss gradient scheme is second-order accurate.</li>
+<li>This scheme is accurate on hexahetral meshes but losses accuracy to first-order  on tetrahetral meshes due to large skewness error.</li>
+</ul>
+<h3 id="Least-square-scheme-for-tetrahetral-mesh"><a href="#Least-square-scheme-for-tetrahetral-mesh" class="headerlink" title="Least square scheme for tetrahetral mesh"></a>Least square scheme for tetrahetral mesh</h3><p>Least square scheme does not use the face center value $\phi_f$. The starting point of the “least-squares” (LS) method for calculating the gradient of a quantity $\phi$ at the centroid of a cell P is the expression of the values of $\phi$ at the centroids of all neighbouring cells as Taylor series expansions about the centroid of P [3]. Then, for each neighbour $f$ it follows from the Taylor expansion that:<br>$$<br>\begin{equation}<br>    \phi(\mathbf{N}_f) &#x3D; \phi(\mathbf{N}_P) + \nabla(\mathbf{P})\cdot(\mathbf{N_f} - \mathbf{P})<br>\end{equation}<br>\tag{3}<br>$$<br><img src="/media/DiscretisaztionScheme/fig1.png" alt="Figure 1: Part of an unstructured grid, showing cell P and its neighbouring cells, each having a single common face with P. Reprint from [2]."><br>A linear system $Ax&#x3D;b$ with more equations than unknowns derived from <strong>Eq</strong>. (3) can be solved in the “least squares” sense. The best vector $z$ we can find is to minimise the error $b - Az$ when $b - Az$ is perpendicular to each column of A, i.e., $A^T(b-Az) &#x3D; 0$. The gradient of a quantity $\phi$ can be shown as:<br>$$<br>\nabla(\mathbf{P}) &#x3D; [(\mathbf{N_f} - \mathbf{P})^T(\mathbf{N_f} - \mathbf{P})]^{-1}(\mathbf{N_f} - \mathbf{P})^T(\phi(\mathbf{N})-\phi(\mathbf{P}))<br>\tag{4}<br>$$<br>A weighting function $\omega &#x3D; 1&#x2F;(\mathbf{N_f} - \mathbf{P})$ can be introduced to this scheme, which produces:<br>$$<br>\nabla(\mathbf{P}) &#x3D; \mathbf{G}^{-1}(\mathbf{N_f} - \mathbf{P})^T\mathbf{W}^T\mathbf{W}(\phi(\mathbf{N})-\phi(\mathbf{P}))<br>\tag{5}<br>$$<br>$$<br>\mathbf{G} &#x3D; (\mathbf{N_f} - \mathbf{P})^T\mathbf{W}^T\mathbf{W}(\mathbf{N_f} - \mathbf{P})<br>\tag{6}<br>$$<br>The least square does not use the divergence theorem and is efficient and accurate to compute gradient of a quantity in tetrahedral meshes. Accounting for thin cells(e.g. boundary layer cells), a weighted least squares scheme is needed.<br><strong>Note</strong>:</p>
+<ul>
+<li>Least squares scheme is second-order accuracy on all meshes.</li>
+<li>Cell- and Face-Limited Gradient is needed to <strong>bounded variables</strong>, especially when gradients are used for further discretisation.</li>
+<li>Cell- and Face-Limited Gradient: Based on the gradient, calculate min and max neighbourhood value and apply gradient limiter to preserve bounds in cell centers.</li>
+<li>Proposed setting for hexahedral meshes: <strong>Gauss or Gauss with limiters</strong></li>
+<li>Proposed setting for tetragedral meshes: <strong>least squares or least squares with limiters</strong> </li>
+<li><a target="_blank" rel="noopener" href="https://www.cfd-online.com/Forums/openfoam-solving/213880-leastsquares-vs-gauss-linear.html">I’ve seen it recommend to use LSQ unless you’re on a tet mesh because of osciillitatory behaviour. I’ve also seen it recommend to never apply limiters on p field and that p should use Gauss linear as it is not a convective term.</a></li>
+</ul>
+<h2 id="Convection-Discretisation"><a href="#Convection-Discretisation" class="headerlink" title="Convection Discretisation"></a>Convection Discretisation</h2><p>Gauss theorem is applied to the convection term:<br>$$<br>\int_V \nabla\cdot(\phi\mathbf{u}) dV &#x3D; \oint_S \phi(\mathbf{n}\cdot\mathbf{u}) dS &#x3D; \sum_f \phi_f(\mathbf{s}_f\cdot\mathbf{u}_f)<br>\tag{7}<br>$$<br>where $\phi_f$ is the face value of $\phi$ and $F &#x3D; \mathbf{s}_f\cdot\mathbf{u}_f$ is the face flux: measure of the flow through the face.</p>
+<h3 id="Convection-scheme-for-phi-f"><a href="#Convection-scheme-for-phi-f" class="headerlink" title="Convection scheme for $\phi_f$"></a>Convection scheme for $\phi_f$</h3><p>Simplest face interpolation is <strong>center differencing</strong> scheme, which is second-order accurate but causes osillations with a fine meshes. Taking into account the transportive of the convection term, we can using <strong>upwind differencing</strong> scheme with no oscillations but smearing the solutions.</p>
+<ul>
+<li>Proposed Settings for hexahedral meshes: Starting with upwind scheme is a way to detect problems in current case. If upwind scheme doesn’t fail, a second-order <strong>linear upwind</strong> with optional gradient limiters is recommmended to apply. TVD&#x2F;NVD schemes for bounded scalars (e.g. turbulence) with deferred correction formulation is recommended.  </li>
+<li>Proposed Setting for tetrahedral meshes: Upwinding scheme is recommended on simple cases. For highly accurate simulations, <strong>reconstructed schemes</strong> are needed.</li>
+<li><a target="_blank" rel="noopener" href="https://cfd.direct/openfoam/user-guide/v6-fvschemes/">‘V’-schemes are specialised versions of schemes designed for vector fields. They differ from conventional schemes by calculating a single limiter which is applied to all components of the vectors, rather than calculating separate limiters for each component of the vector. The ‘V’-schemes’ single limiter is calculated based on the direction of most rapidly changing gradient, resulting in the strongest limiter being calculated which is most stable but arguably less accurate.</a></li>
+</ul>
+<h3 id="Face-interpolation-scheme-for-mathbf-u-f"><a href="#Face-interpolation-scheme-for-mathbf-u-f" class="headerlink" title="Face interpolation scheme for $\mathbf{u}_f$"></a>Face interpolation scheme for $\mathbf{u}_f$</h3><p>A face interpolation scheme of evaluating $\phi_f$ from cell  center values is essential to compute face flux.</p>
+<ul>
+<li>The convection operator for bounded (scalar) properties must preserve boundedness.</li>
+<li>A large number of schemes,e.g. TVD and NVD families, try to achieve good accuracy while preserving boundedness.</li>
+<li>Special differencing schemes for strictly bounded scalars: switching to <strong>upwind differencing</strong> scheme when a variable violates the bound.</li>
+</ul>
+<h2 id="Diffusion-Discretisation"><a href="#Diffusion-Discretisation" class="headerlink" title="Diffusion Discretisation"></a>Diffusion Discretisation</h2><p>Diffusion term is discretised using the Gauss theorem:<br>$$<br>\int_V \Gamma\nabla\cdot\nabla\phi dV &#x3D;<br>\oint_S \Gamma(\mathbf{n}\cdot\nabla\phi) dS &#x3D;<br>\sum_f \Gamma_f\mathbf{s}_f\cdot(\nabla\phi)_f<br>\tag{8}<br>$$<br>A scheme is needed to evaluate the face-normal gradient. For non-orthogonal meshed, a correction term may be necessary:<br>$$<br>\mathbf{s}_f\cdot(\nabla\phi)_f &#x3D;<br>|\mathbf{s}_f|\frac{\phi_N - \phi_P}{|\mathbf{d}_f|}<br>+<br>\mathbf{k}_f\cdot(\nabla\phi)_f<br>\tag{9}<br>$$</p>
+<p>The ““non-orthogonal correction” term depends on mesh quality: mesh non-orthogonality is measured from $\overline{PN}$ and $\mathbf{s}_f$. Limited non-orthogonal correction: explicit part clipped to be smaller than its implicit counterpart, base on the current solution<br>$$<br>\lambda\frac{|\mathbf{s}_f|}{|\mathbf{d}_f|}(\phi_N - \phi_P) &gt; \mathbf{k}_f\cdot(\nabla\phi)_f<br>\tag{10}<br>$$<br>where $\lambda$ is the limited value.</p>
+<ul>
+<li>Proposed Settings for Hexahedral Meshes: If max non-orthogonality is below $60$ degree, no special practice just <strong>Gauss linear corrected</strong>; If max non-orthogonality is above $70$ degree, non-orthogonality limiter: <strong>Gauss linear limited 0.5</strong>. </li>
+<li>Proposed Settings for Tetrahedral Meshes: Always with non-orthogonality limiters. Control limiter based on boundedness messages on scalars</li>
+</ul>
+<p>In all cases, monitor boundedness of scalars and adjust convection and diffusion schemes to remove bounding messages. In complex physics, consider physical properties of variables: <strong>boundedness</strong> and <strong>conservation</strong>.</p>
+<p>The recommended scheme in tet meshes is suitable for <code>foam-extend 3.1</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/*--------------------------------*- C++ -*----------------------------------*\</span><br><span class="line">| =========                 |                                                 |</span><br><span class="line">| \\      /  F ield         | OpenFOAM Extend Project: Open Source CFD        |</span><br><span class="line">|  \\    /   O peration     | Version:  3.1                                   |</span><br><span class="line">|   \\  /    A nd           | Web:      www.extend-project.de                 |</span><br><span class="line">|    \\/     M anipulation  |                                                 |</span><br><span class="line">\*---------------------------------------------------------------------------*/</span><br><span class="line">FoamFile</span><br><span class="line">&#123;</span><br><span class="line">    version     2.0;</span><br><span class="line">    format      ascii;</span><br><span class="line">    class       dictionary;</span><br><span class="line">    object      fvSchemes;</span><br><span class="line">&#125;</span><br><span class="line">// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //</span><br><span class="line"></span><br><span class="line">ddtSchemes</span><br><span class="line">&#123;</span><br><span class="line">    default none;</span><br><span class="line">    ddt(U) Euler;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">gradSchemes</span><br><span class="line">&#123;</span><br><span class="line">    default	      none;</span><br><span class="line">    grad(U)	      cellLimited leastSquares 1.0;</span><br><span class="line">    snGradCorr(U)     cellLimited leastSquares 1.0;</span><br><span class="line">    grad(p)	      leastSquares;</span><br><span class="line">    snGradCorr(p)     leastSquares;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">divSchemes</span><br><span class="line">&#123;</span><br><span class="line">     default	    Gauss reconCentral cellLimited leastSquares 1.0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">laplacianSchemes</span><br><span class="line">&#123;</span><br><span class="line">    default	    none;</span><br><span class="line">    laplacian(nu,U) Gauss linear limited 0.5;</span><br><span class="line">    laplacian((1|A(U)),p) Gauss linear corrected;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interpolationSchemes</span><br><span class="line">&#123;</span><br><span class="line">    default	    reconCentral phi leastSquares;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">snGradSchemes</span><br><span class="line">&#123;</span><br><span class="line">    default  limited 0.5;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fluxRequired</span><br><span class="line">&#123;</span><br><span class="line">    p;</span><br><span class="line">&#125;</span><br><span class="line">// ************************************************************************* //</span><br></pre></td></tr></table></figure>
+
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li>[1] <a target="_blank" rel="noopener" href="https://wiki.openfoam.com/Finite_Volume_Discretization_by_Hrvoje_Jasak">Finite Volume Discretisation in OpenFOAM-<em>Best Practice Guidelines</em></a></li>
+<li>[2] <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=7ymFkxx2R_k">[CFD] Least-Squares Gradient Scheme</a></li>
+<li>[3] <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1606.05556.pdf">A. Syrakos et al. ‘A critical analysis of some popular methods for the discretisation of the gradient operator in Finite volume methods’ Physics of Fluids, 29, 127103, 2017.</a></li>
+<li>[4] G. Strang, Linear Algebra and its Applications. Brooks&#x2F;Cole, 4th ed., 2006.</li>
+</ul>
+
                 
             </div>
             <hr/>
@@ -454,7 +517,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://LSJ0910.github.io/2022/04/10/First-Blog-For-Testing/">https://LSJ0910.github.io/2022/04/10/First-Blog-For-Testing/</a>
+                    <a href="https://LSJ0910.github.io/2022/04/29/Discretisation-Scheme-Settings/">https://LSJ0910.github.io/2022/04/29/Discretisation-Scheme-Settings/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -491,7 +554,11 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">No tag</span>
+                            
+                                <a href="/tags/scheme/">
+                                    <span class="chip bg-color">scheme</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -537,9 +604,60 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
+            <div class="card">
+                <a href="/2022/04/29/Discretisation-Scheme-Settings/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="Discretisation Scheme Settings for OpenFOAM">
+                        
+                        <span class="card-title">Discretisation Scheme Settings for OpenFOAM</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-29
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/OpenFOAM/" class="post-category">
+                                    OpenFOAM
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/scheme/">
+                        <span class="chip bg-color">scheme</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
             <div class="card">
                 <a href="/2022/04/19/complileCPP/">
                     <div class="card-image">
@@ -557,9 +675,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-04-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-19
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -579,43 +697,6 @@
                         <span class="chip bg-color">C++</span>
                     </a>
                     
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Next&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2022/04/10/hello-world/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
-                        
-                        <span class="card-title">Hello World</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-10
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Shi-Jun Li
-                            
-                        </span>
-                    </div>
                 </div>
                 
             </div>
@@ -731,6 +812,13 @@
 
 </main>
 
+
+<script src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+    });
+</script>
 
 
 
