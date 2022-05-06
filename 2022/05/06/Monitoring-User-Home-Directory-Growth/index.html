@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Discretisation Scheme Settings for OpenFOAM, Beeth-Space">
-    <meta name="description" content="Hrvoje Jasak gave a detailed presentation about the best practice guidelines for the Finite Volume (FV) discretisation i">
+    <meta name="keywords" content="Monitoring User Home Directory Growth, Beeth-Space">
+    <meta name="description" content="A bash script created to monitor all non-admin user home directoires for growth of over 1 TB in a 20 min period, and an ">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +19,7 @@
 
     
 
-    <title>Discretisation Scheme Settings for OpenFOAM | Beeth-Space</title>
+    <title>Monitoring User Home Directory Growth | Beeth-Space</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -246,7 +246,7 @@
 <script src="/libs/cryptojs/crypto-js.min.js"></script>
 <script>
     (function() {
-        let pwd = 'cd892494455f6fa019e5b1e015c26726690db60165c7ff0c1e341c3b7b442d77';
+        let pwd = '';
         if (pwd && pwd.length > 0) {
             if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
                 alert('密码错误，将返回主页！');
@@ -259,12 +259,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Discretisation Scheme Settings for OpenFOAM</h1>
+                    <h1 class="description center-align post-title">Monitoring User Home Directory Growth</h1>
                 </div>
             </div>
         </div>
@@ -380,8 +380,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/scheme/">
-                                <span class="chip bg-color">scheme</span>
+                            <a href="/tags/Ubuntu-Bash/">
+                                <span class="chip bg-color">Ubuntu, Bash</span>
                             </a>
                         
                     </div>
@@ -392,8 +392,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/OpenFOAM/" class="post-category">
-                                OpenFOAM
+                            <a href="/categories/Linux/" class="post-category">
+                                Linux
                             </a>
                         
                     </div>
@@ -405,7 +405,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2022-04-29
+                    2022-05-06
                 </div>
                 
 
@@ -414,14 +414,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
-                    1.5k
+                    576
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
-                    9 Min
+                    3 Min
                 </div>
                 
 
@@ -441,71 +441,31 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Hrvoje Jasak gave a detailed presentation about the best practice guidelines for the Finite Volume (FV) discretisation in OpenFOAM at Portuguese FOAM User Group Meeting, 2015.<a href="#1"><sup>1</sup></a> Here we want to summarize the discretisation schemes in <code>foam-extend 3.1</code> and present the best scheme in tet meshes.</p>
+                <p>A bash script created to monitor all non-admin user home directoires for growth of over 1 <code>TB</code> in a 20 min period, and an alterting email containing a list of users and disk space usage information is sent to root user if this occurs. </p>
 <hr>
-<h2 id="Finite-Volume-Discretisation"><a href="#Finite-Volume-Discretisation" class="headerlink" title="Finite Volume Discretisation"></a>Finite Volume Discretisation</h2><ul>
-<li><strong>Mesh quality</strong> is main concerns of FVM accuracy.</li>
-<li>Mesh strcuture (hexahedral or tetrahedral meshes) determines the choice of appropriate gradient calculation algorithm.</li>
-<li>For discretisation of convection and diffusion term, it is essential to use bounded differencing schemes.</li>
-</ul>
-<h2 id="Gradient-Scheme"><a href="#Gradient-Scheme" class="headerlink" title="Gradient Scheme"></a>Gradient Scheme</h2><h3 id="Gauss-gradient-scheme-for-hexahetral-mesh"><a href="#Gauss-gradient-scheme-for-hexahetral-mesh" class="headerlink" title="Gauss gradient scheme for hexahetral mesh"></a>Gauss gradient scheme for hexahetral mesh</h3><p>$$\begin{equation}<br>\int_{V_P}\nabla \phi dV &#x3D; \oint_{\partial V_P} d \mathbf{s}\phi &#x3D; \sum_f \mathbf{s_f}\phi_f<br>\end{equation} $$<br>$$<br>\phi_f &#x3D; \frac{\overline{fN}}{\overline{PN}}\phi_P + (1-\frac{\overline{fN}}{\overline{PN}})\phi_N<br>\tag{2}<br>$$<br>Note:</p>
-<ul>
-<li>If $\phi_f$ is face center value, the Gauss gradient scheme is second-order accurate.</li>
-<li>This scheme is accurate on hexahetral meshes but losses accuracy to first-order  on tetrahetral meshes due to large skewness error.</li>
-</ul>
-<h3 id="Least-square-scheme-for-tetrahetral-mesh"><a href="#Least-square-scheme-for-tetrahetral-mesh" class="headerlink" title="Least square scheme for tetrahetral mesh"></a>Least square scheme for tetrahetral mesh</h3><p>Least square scheme does not use the face center value $\phi_f$. The starting point of the “least-squares” (LS) method for calculating the gradient of a quantity $\phi$ at the centroid of a cell P is the expression of the values of $\phi$ at the centroids of all neighbouring cells as Taylor series expansions about the centroid of P [3]. Then, for each neighbour $f$ it follows from the Taylor expansion that:<br>$$<br>\begin{equation}<br>    \phi(\mathbf{N}_f) &#x3D; \phi(\mathbf{N}_P) + \nabla(\mathbf{P})\cdot(\mathbf{N_f} - \mathbf{P})<br>\end{equation}<br>\tag{3}<br>$$<br><img src="/media/DiscretisaztionScheme/fig1.png" alt="Figure 1: Part of an unstructured grid, showing cell P and its neighbouring cells, each having a single common face with P. Reprint from [2]."><br>A linear system $Ax&#x3D;b$ with more equations than unknowns derived from <strong>Eq</strong>. (3) can be solved in the “least squares” sense. The best vector $z$ we can find is to minimise the error $b - Az$ when $b - Az$ is perpendicular to each column of A, i.e., $A^T(b-Az) &#x3D; 0$. The gradient of a quantity $\phi$ can be shown as:<br>$$<br>\nabla(\mathbf{P}) &#x3D; [(\mathbf{N_f} - \mathbf{P})^T(\mathbf{N_f} - \mathbf{P})]^{-1}(\mathbf{N_f} - \mathbf{P})^T(\phi(\mathbf{N})-\phi(\mathbf{P}))<br>\tag{4}<br>$$<br>A weighting function $\omega &#x3D; 1&#x2F;(\mathbf{N_f} - \mathbf{P})$ can be introduced to this scheme, which produces:<br>$$<br>\nabla(\mathbf{P}) &#x3D; \mathbf{G}^{-1}(\mathbf{N_f} - \mathbf{P})^T\mathbf{W}^T\mathbf{W}(\phi(\mathbf{N})-\phi(\mathbf{P}))<br>\tag{5}<br>$$<br>$$<br>\mathbf{G} &#x3D; (\mathbf{N_f} - \mathbf{P})^T\mathbf{W}^T\mathbf{W}(\mathbf{N_f} - \mathbf{P})<br>\tag{6}<br>$$<br>The least square does not use the divergence theorem and is efficient and accurate to compute gradient of a quantity in tetrahedral meshes. Accounting for thin cells(e.g. boundary layer cells), a weighted least squares scheme is needed.<br><strong>Note</strong>:</p>
-<ul>
-<li>Least squares scheme is second-order accuracy on all meshes.</li>
-<li>Cell- and Face-Limited Gradient is needed to <strong>bounded variables</strong>, especially when gradients are used for further discretisation.</li>
-<li>Cell- and Face-Limited Gradient: Based on the gradient, calculate min and max neighbourhood value and apply gradient limiter to preserve bounds in cell centers.</li>
-<li>Proposed setting for hexahedral meshes: <strong>Gauss or Gauss with limiters</strong></li>
-<li>Proposed setting for tetragedral meshes: <strong>least squares or least squares with limiters</strong> </li>
-<li><a target="_blank" rel="noopener" href="https://www.cfd-online.com/Forums/openfoam-solving/213880-leastsquares-vs-gauss-linear.html">I’ve seen it recommend to use LSQ unless you’re on a tet mesh because of osciillitatory behaviour. I’ve also seen it recommend to never apply limiters on p field and that p should use Gauss linear as it is not a convective term.</a></li>
-</ul>
-<h2 id="Convection-Discretisation"><a href="#Convection-Discretisation" class="headerlink" title="Convection Discretisation"></a>Convection Discretisation</h2><p>Gauss theorem is applied to the convection term:<br>$$<br>\int_V \nabla\cdot(\phi\mathbf{u}) dV &#x3D; \oint_S \phi(\mathbf{n}\cdot\mathbf{u}) dS &#x3D; \sum_f \phi_f(\mathbf{s}_f\cdot\mathbf{u}_f)<br>\tag{7}<br>$$<br>where $\phi_f$ is the face value of $\phi$ and $F &#x3D; \mathbf{s}_f\cdot\mathbf{u}_f$ is the face flux: measure of the flow through the face.</p>
-<h3 id="Convection-scheme-for-phi-f"><a href="#Convection-scheme-for-phi-f" class="headerlink" title="Convection scheme for $\phi_f$"></a>Convection scheme for $\phi_f$</h3><p>Simplest face interpolation is <strong>center differencing</strong> scheme, which is second-order accurate but causes osillations with a fine meshes. Taking into account the transportive of the convection term, we can using <strong>upwind differencing</strong> scheme with no oscillations but smearing the solutions.</p>
-<ul>
-<li>Proposed Settings for hexahedral meshes: Starting with upwind scheme is a way to detect problems in current case. If upwind scheme doesn’t fail, a second-order <strong>linear upwind</strong> with optional gradient limiters is recommmended to apply. TVD&#x2F;NVD schemes for bounded scalars (e.g. turbulence) with deferred correction formulation is recommended.  </li>
-<li>Proposed Setting for tetrahedral meshes: Upwinding scheme is recommended on simple cases. For highly accurate simulations, <strong>reconstructed schemes</strong> are needed.</li>
-<li><a target="_blank" rel="noopener" href="https://cfd.direct/openfoam/user-guide/v6-fvschemes/">‘V’-schemes are specialised versions of schemes designed for vector fields. They differ from conventional schemes by calculating a single limiter which is applied to all components of the vectors, rather than calculating separate limiters for each component of the vector. The ‘V’-schemes’ single limiter is calculated based on the direction of most rapidly changing gradient, resulting in the strongest limiter being calculated which is most stable but arguably less accurate.</a></li>
-</ul>
-<h3 id="Face-interpolation-scheme-for-mathbf-u-f"><a href="#Face-interpolation-scheme-for-mathbf-u-f" class="headerlink" title="Face interpolation scheme for $\mathbf{u}_f$"></a>Face interpolation scheme for $\mathbf{u}_f$</h3><p>A face interpolation scheme of evaluating $\phi_f$ from cell  center values is essential to compute face flux.</p>
-<ul>
-<li>The convection operator for bounded (scalar) properties must preserve boundedness.</li>
-<li>A large number of schemes,e.g. TVD and NVD families, try to achieve good accuracy while preserving boundedness.</li>
-<li>Special differencing schemes for strictly bounded scalars: switching to <strong>upwind differencing</strong> scheme when a variable violates the bound.</li>
-</ul>
-<h2 id="Diffusion-Discretisation"><a href="#Diffusion-Discretisation" class="headerlink" title="Diffusion Discretisation"></a>Diffusion Discretisation</h2><p>Diffusion term is discretised using the Gauss theorem:<br>$$<br>\int_V \Gamma\nabla\cdot\nabla\phi dV &#x3D;<br>\oint_S \Gamma(\mathbf{n}\cdot\nabla\phi) dS &#x3D;<br>\sum_f \Gamma_f\mathbf{s}_f\cdot(\nabla\phi)_f<br>\tag{8}<br>$$<br>A scheme is needed to evaluate the face-normal gradient. For non-orthogonal meshed, a correction term may be necessary:<br>$$<br>\mathbf{s}_f\cdot(\nabla\phi)_f &#x3D;<br>|\mathbf{s}_f|\frac{\phi_N - \phi_P}{|\mathbf{d}_f|}<br>+<br>\mathbf{k}_f\cdot(\nabla\phi)_f<br>\tag{9}<br>$$</p>
-<p>The “non-orthogonal correction” term depends on mesh quality: mesh non-orthogonality is measured from $\overline{PN}$ and $\mathbf{s}_f$. Limited non-orthogonal correction: explicit part clipped to be smaller than its implicit counterpart, base on the current solution<br>$$<br>\lambda\frac{|\mathbf{s}_f|}{|\mathbf{d}_f|}(\phi_N - \phi_P) &gt; \mathbf{k}_f\cdot(\nabla\phi)_f<br>\tag{10}<br>$$<br>where $\lambda$ is the limited value.</p>
-<ul>
-<li>Proposed Settings for Hexahedral Meshes: If max non-orthogonality is below $60$ degree, no special practice just <strong>Gauss linear corrected</strong>; If max non-orthogonality is above $70$ degree, non-orthogonality limiter: <strong>Gauss linear limited 0.5</strong>. </li>
-<li>Proposed Settings for Tetrahedral Meshes: Always with non-orthogonality limiters. Control limiter based on boundedness messages on scalars</li>
-</ul>
-<p>In all cases, monitor boundedness of scalars and adjust convection and diffusion schemes to remove bounding messages. In complex physics, consider physical properties of variables: <strong>boundedness</strong> and <strong>conservation</strong>.</p>
-<p>The recommended scheme in tet meshes is suitable for <code>foam-extend 3.1</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/*--------------------------------*- C++ -*----------------------------------*\</span><br><span class="line">| =========                 |                                                 |</span><br><span class="line">| \\      /  F ield         | OpenFOAM Extend Project: Open Source CFD        |</span><br><span class="line">|  \\    /   O peration     | Version:  3.1                                   |</span><br><span class="line">|   \\  /    A nd           | Web:      www.extend-project.de                 |</span><br><span class="line">|    \\/     M anipulation  |                                                 |</span><br><span class="line">\*---------------------------------------------------------------------------*/</span><br><span class="line">FoamFile</span><br><span class="line">&#123;</span><br><span class="line">    version     2.0;</span><br><span class="line">    format      ascii;</span><br><span class="line">    class       dictionary;</span><br><span class="line">    object      fvSchemes;</span><br><span class="line">&#125;</span><br><span class="line">// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //</span><br><span class="line"></span><br><span class="line">ddtSchemes</span><br><span class="line">&#123;</span><br><span class="line">    default none;</span><br><span class="line">    ddt(U) Euler;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">gradSchemes</span><br><span class="line">&#123;</span><br><span class="line">    default	      none;</span><br><span class="line">    grad(U)	      cellLimited leastSquares 1.0;</span><br><span class="line">    snGradCorr(U)     cellLimited leastSquares 1.0;</span><br><span class="line">    grad(p)	      leastSquares;</span><br><span class="line">    snGradCorr(p)     leastSquares;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">divSchemes</span><br><span class="line">&#123;</span><br><span class="line">     default	    Gauss reconCentral cellLimited leastSquares 1.0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">laplacianSchemes</span><br><span class="line">&#123;</span><br><span class="line">    default	    none;</span><br><span class="line">    laplacian(nu,U) Gauss linear limited 0.5;</span><br><span class="line">    laplacian((1|A(U)),p) Gauss linear corrected;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interpolationSchemes</span><br><span class="line">&#123;</span><br><span class="line">    default	    reconCentral phi leastSquares;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">snGradSchemes</span><br><span class="line">&#123;</span><br><span class="line">    default  limited 0.5;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fluxRequired</span><br><span class="line">&#123;</span><br><span class="line">    p;</span><br><span class="line">&#125;</span><br><span class="line">// ************************************************************************* //</span><br></pre></td></tr></table></figure>
+<h2 id="Directory-space-information"><a href="#Directory-space-information" class="headerlink" title="Directory space information"></a>Directory space information</h2><p>If you want to loop over directories under current path, then a commmand [1]:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">for path in /my/path/W*; do</span><br><span class="line">    [ -d &quot;$&#123;path&#125;&quot; ] || continue # if not a directory, skip</span><br><span class="line">    dirname=&quot;$(basename &quot;$&#123;path&#125;&quot;)&quot;</span><br><span class="line">    do_stuff</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
 
-<h2 id="Limiters"><a href="#Limiters" class="headerlink" title="Limiters"></a>Limiters</h2><p>There are two types of limiting: <strong>cell and face</strong>. Cell limiting determines the limited gradient along a line connecting adjacent cell centers. Face limiting determines the limited gradient on the face itself. <strong>Cell limiting should be less dissipative</strong> [9].</p>
-<p>Standard gradient limiting, i.e. cellLimited, clips each component of the gradient equally (remember it’s a vector). cellMDLimited is a Multi-Dimensional limiter whereby the gradient is clipped in the direction normal the cell faces.</p>
-<p>Of course, reducing dissipation has the potential benefit of better accuracy but increases the risk of instability. The limited gradient schemes in OpenFOAM listed from least to most dissipation:</p>
-<ul>
-<li>cellMDLimited</li>
-<li>cellLimited</li>
-<li>faceMDLimited</li>
-<li>faceLimited</li>
-</ul>
-<p> If you wanna look yourself, the source code for the gradient schemes can be found in the following directory:<br> <code>$WM_PROJECT_DIR/src/finiteVolume/finiteVolume/gradSchemes/</code></p>
+<p>where <code>/my/path/W*</code> is the path you would do. To find the size of a directory <code>dirname</code> and store it into a variable <code>tmpSize</code> [2]:<br><code>tmpSize=$(du -sh --block-size=M $dirname)</code><br><code>tmpSize=$&#123;tmpSize%M*&#125;</code></p>
+<h2 id="Compare-two-floating-point-number-in-bash"><a href="#Compare-two-floating-point-number-in-bash" class="headerlink" title="Compare two floating point number in bash"></a>Compare two floating point number in bash</h2><p>If you want to compare the size of non-admin user with critical value <code>MAX=1 TB</code>, then you need to compare two floating number.[3]</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if (( $(ech &quot;$tmpSize &gt; $MAX&quot; | bc -l) )); then</span><br><span class="line">    do_stuff</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h2 id="Send-email-from-terminal"><a href="#Send-email-from-terminal" class="headerlink" title="Send email from terminal"></a>Send email from terminal</h2><p>There are ways to send email from terminal in Linux&#x2F;MacOS. We use this commmand [4]:<br><code>mail -s &quot;Disk Space is running out !!!&quot; diskSpace.dat example@example.com &lt;&lt;&lt; &quot;Disk space in /Uses/home is running out. Please check the attachment file: diskSpace.dat for more information&quot;</code><br>This will send an email to <code>example@example.com</code> with the subject <code>Disk Space is running out !!!</code> and message <code>Disk space in /Uses/home is running out. Please check the attachment file: diskSpace.dat for more information</code>. By the way, an attachment file <code>diskSpace.dat</code> is provided to list the usage of disk space.</p>
+<h2 id="Execute-a-shell-script-every-20-minutes"><a href="#Execute-a-shell-script-every-20-minutes" class="headerlink" title="Execute a shell script every 20 minutes"></a>Execute a shell script every 20 minutes</h2><p>Here we use <code>crontab</code> to execute a shell script every 20 minutes. To add a crontab job, type the following command at Linux shell prompt: [6]<br><code>crontab -e</code><br>Add the following line:<br><code>1 2 3 4 5 /path/to/script</code><br>where</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1: Minutes (0-59)</span><br><span class="line">2: Hours (0-23)</span><br><span class="line">3: Days (1-31)</span><br><span class="line">4: Month (1-12)</span><br><span class="line">5: Day of the week(1-7)</span><br><span class="line">/path/to/script - your own shell script</span><br></pre></td></tr></table></figure>
+<p>The line we specifically need is<br><code>*/20 * * * * /path/to/script</code><br>I’d like to execute this script at the end of each day (let’s assume at 23:55), then<br><code>55 23 * * * /path/to/yourShellScript</code></p>
+<h2 id="Start-a-terminal-on-login-and-show-a-disk-usage-message"><a href="#Start-a-terminal-on-login-and-show-a-disk-usage-message" class="headerlink" title="Start a terminal on login and show a disk usage message"></a>Start a terminal on login and show a disk usage message</h2><p>If you have all line mensioned already om a script, it would probably be more pratical to set Startup Applications to launch the script and maintain the script instead of the command in Startup Applications. Add this line to the end of <code>~/.bashrc</code>：<br><code>gnome-terminal -e &#39;bash -c &quot;/path/to/script.sh; exec bash&quot;&#39;</code><br><code>source ~/.bashrc</code></p>
+<p>The output may be like this:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">USER            workingFolder           Used            Used Ratio/Total</span><br><span class="line">------------------------------------------------------------------------</span><br><span class="line">1               /home/admin/1           14.76 GB        0/.85</span><br><span class="line">2               /home/admin/2           64.08 GB        .01/.85</span><br><span class="line">3               /home/admin/3           956.21 GB       .23/.85</span><br><span class="line">4               /home/admin/4           2383.86 GB      .58/.85</span><br><span class="line">5               /home/admin/5           143.36 GB       .03/.85</span><br><span class="line">Total   .85/.85</span><br></pre></td></tr></table></figure>
+
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
-<li>[1] <a target="_blank" rel="noopener" href="https://wiki.openfoam.com/Finite_Volume_Discretization_by_Hrvoje_Jasak">Finite Volume Discretisation in OpenFOAM-<em>Best Practice Guidelines</em></a></li>
-<li>[2] <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=7ymFkxx2R_k">[CFD] Least-Squares Gradient Scheme</a></li>
-<li>[3] <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1606.05556.pdf">A. Syrakos et al. ‘A critical analysis of some popular methods for the discretisation of the gradient operator in Finite volume methods’ Physics of Fluids, 29, 127103, 2017.</a></li>
-<li>[4] G. Strang, Linear Algebra and its Applications. Brooks&#x2F;Cole, 4th ed., 2006.</li>
-<li>[5] <a target="_blank" rel="noopener" href="https://www.openfoam.com/documentation/user-guide/6-solving/6.2-numerical-schemes">OpenFOAM-6-documentation-numerical-schemes</a></li>
-<li>[6] <a target="_blank" rel="noopener" href="https://www.openfoam.com/documentation/guides/latest/doc/guide-schemes-divergence-nvd-tvd.html">Guide-schemes-divergence-nvd-tvd</a></li>
-<li>[7] <a target="_blank" rel="noopener" href="https://holzmann-cfd.com/community/numerical-schemes/convective-diffusion-analysis">Numerical-schemes&#x2F;convective-diffusion-analysis</a></li>
-<li>[8] <a target="_blank" rel="noopener" href="https://cfd.direct/openfoam/user-guide/v6-fvSchemes/#x19-1410004.4">OpebFOAM-v6-fvSchemes</a></li>
-<li>[9] <a target="_blank" rel="noopener" href="https://openfoamwiki.net/index.php/OpenFOAM_guide/Limiters">OpenFOAM-Limiters</a></li>
-<li>[10] <a target="_blank" rel="noopener" href="http://www.wolfdynamics.com/training/OF_WS2020/traning_session2020.pdf">OF_WS2020&#x2F;traning_session2020.pdf</a></li>
+<li>[1] <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/15854559/looping-over-directories-in-bash">Looping over directories in Bash</a></li>
+<li>[2] <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/16661982/check-folder-size-in-bash">Check folder size in Bash</a></li>
+<li>[3] <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/8654051/how-can-i-compare-two-floating-point-numbers-in-bash">Compare two floating point numbers in Bash</a></li>
+<li>[4] <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/8260858/how-to-send-email-from-terminal">How to send email from Terminal</a></li>
+<li>[5] <a target="_blank" rel="noopener" href="https://tecadmin.net/ways-to-send-email-from-linux-command-line/">5 Ways to Send Email From Linux Command Line</a></li>
+<li>[6] <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/34753831/execute-a-shell-script-everyday-at-specific-time">Execute a shell script everyday at specific time [duplicate]</a></li>
+<li>[7] <a target="_blank" rel="noopener" href="https://askubuntu.com/questions/684703/script-to-open-terminal-and-show-the-output-of-the-running-commands">Script to open terminal and show the output of the running commands</a></li>
 </ul>
 
                 
@@ -533,7 +493,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://LSJ0910.github.io/2022/04/29/Discretisation-Scheme-Settings/">https://LSJ0910.github.io/2022/04/29/Discretisation-Scheme-Settings/</a>
+                    <a href="https://LSJ0910.github.io/2022/05/06/Monitoring-User-Home-Directory-Growth/">https://LSJ0910.github.io/2022/05/06/Monitoring-User-Home-Directory-Growth/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -571,8 +531,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/scheme/">
-                                    <span class="chip bg-color">scheme</span>
+                                <a href="/tags/Ubuntu-Bash/">
+                                    <span class="chip bg-color">Ubuntu, Bash</span>
                                 </a>
                             
                         </div>
@@ -620,9 +580,60 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
+            <div class="card">
+                <a href="/2022/05/06/Monitoring-User-Home-Directory-Growth/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="Monitoring User Home Directory Growth">
+                        
+                        <span class="card-title">Monitoring User Home Directory Growth</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-05-06
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Linux/" class="post-category">
+                                    Linux
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Ubuntu-Bash/">
+                        <span class="chip bg-color">Ubuntu, Bash</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
             <div class="card">
                 <a href="/2022/05/01/Hexa-meshing-for-a-sphere-in-ICEM/">
                     <div class="card-image">
@@ -640,9 +651,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-05-01
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-05-01
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -660,55 +671,6 @@
                     
                     <a href="/tags/ICEM/">
                         <span class="chip bg-color">ICEM</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Next&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2022/04/19/complileCPP/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="Compile a C++ program with GCC">
-                        
-                        <span class="card-title">Compile a C++ program with GCC</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-19
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/OpenFOAM/" class="post-category">
-                                    OpenFOAM
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/C/">
-                        <span class="chip bg-color">C++</span>
                     </a>
                     
                 </div>
